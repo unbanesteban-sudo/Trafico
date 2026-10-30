@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Señales viales</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="cabecera">
+    <h1><span id="cuenta">0</span> señales</h1>
+    <p class="bajada">Las señales son el idioma de la calle: la forma y el color ya dicen si te prohíben, te avisan o te informan.
+      Tocá una señal y aparece qué significa, qué tenés que hacer y lo que te pueden preguntar en el examen.</p>
+    <p class="firma">Educación Vial · 4° año · 2026</p>
+  </header>
+
+  <nav class="filtros" aria-label="Filtrar señales">
+    <div class="familias" id="familias">
+      <button type="button" class="familia activa" data-familia="todas" aria-pressed="true">Todas</button>
+      <button type="button" class="familia" data-familia="reglamentarias" aria-pressed="false">Reglamentarias</button>
+      <button type="button" class="familia" data-familia="preventivas" aria-pressed="false">Preventivas</button>
+      <button type="button" class="familia" data-familia="peligro" aria-pressed="false">Máximo peligro</button>
+      <button type="button" class="familia" data-familia="informativas" aria-pressed="false">Informativas</button>
+      <button type="button" class="familia" data-familia="transitorias" aria-pressed="false">Transitorias</button>
+      <button type="button" class="familia" data-familia="marcas" aria-pressed="false">Marcas</button>
+      <button type="button" class="familia" data-familia="luminosas" aria-pressed="false">Luminosas</button>
+    </div>
+    <div class="acciones">
+      <button type="button" class="tapar" id="tapar" aria-pressed="false">Ocultar nombres</button>
+      <button type="button" class="abrir-consejos" id="abrirConsejos">Consejos de seguridad</button>
+    </div>
+  </nav>
+
+  <main>
+    <ul class="tablero" id="tablero" aria-label="Señales de tránsito"></ul>
+  </main>
+
+  <div class="velo" id="velo" hidden></div>
+  <aside class="ficha" id="ficha" role="dialog" aria-modal="true" aria-labelledby="fichaNombre" hidden>
+    <div class="ficha-arriba">
+      <div class="ficha-dibujo" id="fichaDibujo"></div>
+      <div>
+        <p class="ficha-familia" id="fichaFamilia"></p>
+        <h2 id="fichaNombre"></h2>
+        <p class="ficha-codigo" id="fichaCodigo"></p>
+      </div>
+      <button type="button" class="cerrar" id="cerrar" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="ficha-cuerpo">
+      <h3>Qué significa</h3>
+      <p id="fichaSignifica"></p>
+
+      <h3>Qué tenés que hacer</h3>
+      <p id="fichaHacer"></p>
+
+      <h3>Cómo la reconocés</h3>
+      <p id="fichaForma"></p>
+
+      <div class="examen">
+        <h3>Te pueden preguntar</h3>
+        <p class="pregunta" id="fichaPregunta"></p>
+        <button type="button" class="revelar" id="revelar" aria-expanded="false" aria-controls="fichaRespuesta">Ver respuesta</button>
+        <p class="respuesta" id="fichaRespuesta" hidden></p>
+      </div>
+    </div>
+
+    <div class="ficha-abajo">
+      <button type="button" class="pasar" id="anterior">← Anterior</button>
+      <span id="fichaPosicion"></span>
+      <button type="button" class="pasar" id="siguiente">Siguiente →</button>
+    </div>
+  </aside>
+
+  <aside class="ficha" id="consejos" role="dialog" aria-modal="true" aria-labelledby="consejosTitulo" hidden>
+    <div class="consejos-arriba">
+      <h2 id="consejosTitulo">Recomendaciones de seguridad</h2>
+      <button type="button" class="cerrar" id="cerrarConsejos" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="ficha-cuerpo">
+      <p class="consejos-intro">Las señales ordenan la calle, pero la seguridad depende de lo que hace cada uno. Elegí cómo circulás:</p>
+
+      <div class="roles">
+        <button type="button" class="rol activa" data-rol="peaton" aria-pressed="true">Peatón</button>
+        <button type="button" class="rol" data-rol="ciclista" aria-pressed="false">Ciclista</button>
+        <button type="button" class="rol" data-rol="conductor" aria-pressed="false">Conductor</button>
+      </div>
+
+      <ul class="consejos-lista" id="peaton">
+        <li>Cruzá siempre por la senda peatonal y en la esquina: ahí tenés prioridad.</li>
+        <li>Esperá la figura verde del semáforo peatonal. Si empieza a titilar, no empieces a cruzar.</li>
+        <li>Mirá a los dos lados antes de cruzar, aunque tengas prioridad.</li>
+        <li>Caminá por la vereda y esperá el colectivo arriba del cordón, no en la calle.</li>
+        <li>No cruces entre autos estacionados: los conductores no te ven.</li>
+        <li>De noche usá ropa clara o algo que refleje la luz.</li>
+      </ul>
+
+      <ul class="consejos-lista" id="ciclista" hidden>
+        <li>Circulá por la derecha y en el mismo sentido que los autos.</li>
+        <li>Usá casco, luces y elementos reflectivos para que te vean.</li>
+        <li>Avisá con el brazo antes de doblar.</li>
+        <li>Respetá los semáforos y las señales: la bicicleta es un vehículo.</li>
+        <li>Usá la ciclovía cuando haya una.</li>
+        <li>No vayas por la vereda: es de los peatones.</li>
+      </ul>
+
+      <ul class="consejos-lista" id="conductor" hidden>
+        <li>Respetá la velocidad: 40 km/h en la ciudad y 20 km/h cerca de escuelas y en pasos a nivel sin barreras.</li>
+        <li>Dejá distancia con el de adelante: a 40 km/h, unos 20 metros.</li>
+        <li>A 40 km/h necesitás unos 22 metros para frenar del todo.</li>
+        <li>No te adelantes en curvas, puentes, subidas, túneles, cruces ni pasos a nivel.</li>
+        <li>Para adelantarte: guiño izquierdo, cambio de luces y volvé al carril con guiño derecho.</li>
+        <li>En ruta, luces bajas prendidas las 24 horas.</li>
+        <li>Si te da sueño, pará, descansá y después seguí.</li>
+      </ul>
+    </div>
+  </aside>
+
+  <script src="icons.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
