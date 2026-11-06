@@ -8,7 +8,6 @@ var FAMILIAS = {
   luminosas: "Luminosa"
 };
 
-// formas de reconocer
 var FORMAS = {
   pare: "Octógono rojo con la palabra PARE. Es la única señal con esa forma, así se reconoce aunque esté sucia o de espaldas.",
   ceda: "Triángulo con la punta hacia abajo, blanco con borde rojo. Es la única señal con esa forma.",
@@ -28,8 +27,6 @@ var FORMAS = {
 };
 
 var SENALES = [
-
-  /* reglamentarias */
 
   {
     codigo: "R01", nombre: "Pare", familia: "reglamentarias", forma: "pare",
@@ -337,8 +334,6 @@ var SENALES = [
     respuesta: "La E en azul permite. La E en un círculo rojo con barra lo prohíbe."
   },
 
-  /* preventivas*/
-
   {
     codigo: "P01", nombre: "Curva", familia: "preventivas", forma: "preventiva",
     dibujo: DIBUJAR.rombo("curva"),
@@ -636,8 +631,6 @@ var SENALES = [
     respuesta: "Que se terminó el peligro que avisaba la señal sin tachar."
   },
 
-  /* mucho peligro */
-
   {
     codigo: "M01", nombre: "Paso a nivel sin barreras", familia: "peligro", forma: "peligro",
     dibujo: DIBUJAR.peligro("tren", 0.42),
@@ -710,8 +703,6 @@ var SENALES = [
     pregunta: "¿Hacia dónde apunta?",
     respuesta: "Hacia el lado en que dobla la curva."
   },
-
-  /*informativas  */
 
   {
     codigo: "I01", nombre: "Ruta nacional", familia: "informativas", forma: "via",
@@ -874,8 +865,6 @@ var SENALES = [
     respuesta: "Un sobre de carta."
   },
 
-  /* transitorias*/
-
   {
     codigo: "T01", nombre: "Hombres trabajando", familia: "transitorias", forma: "transitoria",
     dibujo: DIBUJAR.rombo("obrero", 0.5, NARANJA),
@@ -900,8 +889,6 @@ var SENALES = [
     pregunta: "¿Qué hacer si la obra tiene un banderillero?",
     respuesta: "Obedecer sus indicaciones: mandan por encima de los carteles."
   },
-
-  /* marcasdel pavimento */
 
   {
     codigo: "H01", nombre: "Senda peatonal", familia: "marcas", forma: "marca",
@@ -963,8 +950,6 @@ var SENALES = [
     pregunta: "Si tu carril tiene flecha derecho y a la derecha, ¿podés doblar a la izquierda?",
     respuesta: "No. Solo podés hacer lo que marcan las flechas de tu carril."
   },
-
-  /*luminos*/
 
   {
     codigo: "L01", nombre: "Semáforo", familia: "luminosas", forma: "luminosa",

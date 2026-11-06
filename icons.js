@@ -1,9 +1,4 @@
-/* =========================================================
-   DIBUJOS DE LAS SEÑALES
-   Cada señal se dibuja con SVG en un cuadro de 100 x 100.
-   Las formas y colores siguen las señales argentinas
-   (material de Educación Vial que dio la profe).
-   ========================================================= */
+
 
 var NEGRO = "#1a1a1a";
 var ROJO = "#c8102e";
@@ -14,26 +9,21 @@ var VERDE = "#178a45";
 var BLANCO = "#ffffff";
 var ASFALTO = "#3a3a3a";
 
-var contadorId = 0; // para los clipPath (cada uno necesita un id distinto)
-
-/* ---------- herramientas chicas ---------- */
+var contadorId = 0;
 
 function lienzo(contenido) {
   return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + contenido + "</svg>";
 }
 
-// trazo con el color del dibujo
 function trazo(grosor) {
   return 'fill="none" stroke="currentColor" stroke-width="' + grosor + '" stroke-linecap="round" stroke-linejoin="round"';
 }
 
-// texto centrado
 function texto(t, x, y, tam, color) {
   return '<text x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="central" ' +
     'font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="' + tam + '" fill="' + (color || "currentColor") + '">' + t + "</text>";
 }
 
-// punta de flecha: la base queda en (x, y) y apunta en la dirección que viene de (deX, deY)
 function punta(deX, deY, x, y, tam) {
   var dx = x - deX;
   var dy = y - deY;
@@ -49,7 +39,6 @@ function punta(deX, deY, x, y, tam) {
   return '<polygon points="' + p1 + " " + p2 + " " + p3 + '" fill="currentColor"/>';
 }
 
-// flecha de trazo: camino + punta al final
 function flecha(camino, deX, deY, x, y, grosor, tam) {
   return '<path d="' + camino + '" ' + trazo(grosor) + "/>" + punta(deX, deY, x, y, tam);
 }
@@ -62,19 +51,12 @@ function espejar(dibujo) {
   return '<g transform="translate(100 0) scale(-1 1)">' + dibujo + "</g>";
 }
 
-// achica un pictograma (dibujado en 0-100) y lo centra
 function ubicar(dibujo, escala, color, dx, dy) {
   dx = dx || 0;
   dy = dy || 0;
   return '<g color="' + color + '" fill="currentColor" transform="translate(' + (50 + dx) + " " + (50 + dy) +
     ") scale(" + escala + ') translate(-50 -50)">' + dibujo + "</g>";
 }
-
-/* =========================================================
-   PICTOGRAMAS
-   Son funciones porque algunos necesitan saber el color
-   del fondo para "agujerear" ventanas y ruedas.
-   ========================================================= */
 
 var P = {};
 
@@ -106,7 +88,6 @@ P.auto = function (fondo) {
     '<circle cx="73" cy="69" r="11" fill="' + fondo + '"/><circle cx="73" cy="69" r="8"/>';
 };
 
-// auto visto de atrás (para "prohibido adelantarse")
 P.autoAtras = function (fondo) {
   return '<path d="M20 30 Q22 22 30 22 H70 Q78 22 80 30 L84 48 Q90 50 90 56 V76 H10 V56 Q10 50 16 48 Z"/>' +
     '<path d="M28 30 H72 L75 46 H25 Z" fill="' + fondo + '"/>' +
@@ -251,8 +232,6 @@ P.semaforoChico = function () {
     '<circle cx="50" cy="78" r="11" fill="' + VERDE + '"/>';
 };
 
-/* ---- pictogramas de preventivas ---- */
-
 P.curva = function () {
   return flecha("M40 94 V64 Q40 34 64 26", 52, 29, 64, 25, 13, 20);
 };
@@ -279,9 +258,7 @@ P.rotonda = function () {
     var y1 = 50 - 28 * Math.sin(a1);
     var x2 = 50 + 28 * Math.cos(a2);
     var y2 = 50 - 28 * Math.sin(a2);
-    // sentido antihorario (en Argentina se gira por la derecha)
     var cam = "M" + x1.toFixed(1) + " " + y1.toFixed(1) + " A28 28 0 0 0 " + x2.toFixed(1) + " " + y2.toFixed(1);
-    // punto un poco antes del final, siguiendo la curva (para orientar la punta)
     var tanX = x2 + 10 * Math.sin(a2);
     var tanY = y2 + 10 * Math.cos(a2);
     dibujo += '<path d="' + cam + '" ' + trazo(10) + "/>" + punta(tanX, tanY, x2, y2, 14);
@@ -411,8 +388,6 @@ P.desvio = function () {
   return flecha("M34 94 V64 Q34 52 50 50 Q66 48 66 36 V30", 66, 40, 66, 26, 12, 19);
 };
 
-/* ---- pictogramas de servicios (informativas) ---- */
-
 P.cruzRoja = function () {
   return '<path d="M38 10 H62 V38 H90 V62 H62 V90 H38 V62 H10 V38 H38 Z" fill="' + ROJO + '"/>';
 };
@@ -478,10 +453,6 @@ P.estacionamiento = function () {
   return texto("E", 50, 53, 76);
 };
 
-/* =========================================================
-   FORMAS DE SEÑAL (el "cartel" completo)
-   ========================================================= */
-
 function octogono() {
   return '<polygon points="30,2 70,2 98,30 98,70 70,98 30,98 2,70 2,30" fill="' + ROJO + '"/>' +
     '<polygon points="32,7 68,7 93,32 93,68 68,93 32,93 7,68 7,32" fill="none" stroke="' + BLANCO + '" stroke-width="2.5"/>' +
@@ -510,7 +481,6 @@ DIBUJAR.contramano = function () {
   return lienzo('<circle cx="50" cy="50" r="47" fill="' + ROJO + '"/><rect x="16" y="41" width="68" height="18" fill="' + BLANCO + '"/>');
 };
 
-// círculo blanco, borde rojo, barra roja (prohíbe)
 DIBUJAR.prohibicion = function (picto, escala, opciones) {
   opciones = opciones || {};
   var barra = '<line x1="20" y1="20" x2="80" y2="80" stroke="' + ROJO + '" stroke-width="9"/>';
@@ -521,7 +491,6 @@ DIBUJAR.prohibicion = function (picto, escala, opciones) {
     ubicar(P[picto](BLANCO), escala || 0.56, NEGRO, opciones.dx, opciones.dy) + barra);
 };
 
-// dos autos de atrás: el rojo es el que no puede pasar
 DIBUJAR.adelantarse = function () {
   return lienzo('<circle cx="50" cy="50" r="44" fill="' + BLANCO + '" stroke="' + ROJO + '" stroke-width="10"/>' +
     ubicar(P.autoAtras(BLANCO), 0.3, ROJO, -15, 2) +
@@ -529,7 +498,6 @@ DIBUJAR.adelantarse = function () {
     '<line x1="20" y1="20" x2="80" y2="80" stroke="' + ROJO + '" stroke-width="9"/>');
 };
 
-// círculo con borde rojo sin barra (pone un límite)
 DIBUJAR.limite = function (contenido) {
   return lienzo('<circle cx="50" cy="50" r="44" fill="' + BLANCO + '" stroke="' + ROJO + '" stroke-width="10"/>' +
     '<g color="' + NEGRO + '" fill="currentColor">' + contenido + "</g>");
@@ -542,7 +510,6 @@ DIBUJAR.prioridadContraria = function () {
   );
 };
 
-// círculo azul, dibujo blanco (obliga)
 DIBUJAR.obligacion = function (picto, escala, giro) {
   var dibujo = P[picto](AZUL);
   if (giro) {
@@ -557,7 +524,6 @@ DIBUJAR.obligacionLibre = function (contenido) {
     '<g color="' + BLANCO + '" fill="currentColor">' + contenido + "</g>");
 };
 
-// rombo amarillo (preventiva) o naranja (transitoria)
 DIBUJAR.rombo = function (picto, escala, color, opciones) {
   opciones = opciones || {};
   var fondo = color || AMARILLO;
@@ -572,7 +538,6 @@ DIBUJAR.rombo = function (picto, escala, color, opciones) {
     ubicar(P[picto](fondo), escala || 0.5, colorPicto, opciones.dx, opciones.dy) + fin);
 };
 
-// triángulo de máximo peligro
 DIBUJAR.peligro = function (picto, escala, dy) {
   return lienzo('<path d="M50 7 L95 88 H5 Z" fill="' + BLANCO + '" stroke="' + ROJO + '" stroke-width="9" stroke-linejoin="round"/>' +
     ubicar(P[picto](BLANCO), escala || 0.4, NEGRO, 0, dy === undefined ? 12 : dy));
@@ -607,7 +572,6 @@ DIBUJAR.panel = function (tipo) {
     '<rect x="30" y="4" width="40" height="92" fill="none" stroke="' + NEGRO + '" stroke-width="2"/>');
 };
 
-// rectángulo azul con cuadro blanco (servicios)
 DIBUJAR.servicio = function (picto, escala) {
   return lienzo('<rect x="14" y="3" width="72" height="94" rx="4" fill="' + AZUL + '"/>' +
     '<rect x="21" y="10" width="58" height="58" fill="' + BLANCO + '"/>' +
@@ -639,13 +603,9 @@ DIBUJAR.sinSalida = function () {
     '<rect x="18" y="18" width="64" height="20" fill="' + ROJO + '"/>');
 };
 
-/* ---- marcas sobre el pavimento ---- */
-
 DIBUJAR.marca = function (contenido) {
   return lienzo('<rect x="2" y="2" width="96" height="96" fill="' + ASFALTO + '"/>' + contenido);
 };
-
-/* ---- señales luminosas ---- */
 
 function luz(cx, cy, color, prendida) {
   return '<circle cx="' + cx + '" cy="' + cy + '" r="11" fill="' + color + '" opacity="' + (prendida ? 1 : 0.25) + '"/>';

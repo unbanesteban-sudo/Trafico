@@ -1,81 +1,77 @@
+// ===== VARIABLES =====
+// la familia que elegi en el filtro y las señales que se ven
 var familiaElegida = "todas";
 var visibles = [];
-var abierta = -1;
-var botonQueAbrio = null;
 
+// busco en el HTML las partes que voy a usar
 var tablero = document.getElementById("tablero");
 var ficha = document.getElementById("ficha");
+var consejos = document.getElementById("consejos");
 var velo = document.getElementById("velo");
 
+
+// ===== ARMAR EL TABLERO DE SEÑALES =====
 function armarTablero() {
+  // vacio el tablero
   tablero.innerHTML = "";
   visibles = [];
 
+  // me quedo solo con las señales de la familia elegida
   for (var i = 0; i < SENALES.length; i++) {
-    if (familiaElegida === "todas" || SENALES[i].familia === familiaElegida) {
+    if (familiaElegida == "todas" || SENALES[i].familia == familiaElegida) {
       visibles.push(SENALES[i]);
     }
   }
 
+  // creo un boton por cada señal
   for (var j = 0; j < visibles.length; j++) {
-    var senal = visibles[j];
     var item = document.createElement("li");
     var boton = document.createElement("button");
-    boton.type = "button";
     boton.className = "senal";
-    boton.setAttribute("data-pos", j);
-    boton.setAttribute("aria-label", senal.nombre + ". Ver significado");
+    boton.setAttribute("data-pos", j); // guardo en que posicion esta
     boton.innerHTML =
-      '<span class="chapa">' + senal.dibujo + "</span>" +
-      '<span class="nombre">' + senal.nombre + "</span>" +
-      '<span class="codigo">' + senal.codigo + "</span>";
+      '<span class="chapa">' + visibles[j].dibujo + "</span>" +
+      '<span class="nombre">' + visibles[j].nombre + "</span>" +
+      '<span class="codigo">' + visibles[j].codigo + "</span>";
 
+    // al tocar la señal se abre su ficha
     boton.onclick = function () {
-      botonQueAbrio = this;
-      abrirFicha(Number(this.getAttribute("data-pos")));
+      abrirFicha(this.getAttribute("data-pos"));
     };
 
+    // agrego el boton a la pagina
     item.appendChild(boton);
     tablero.appendChild(item);
   }
 
+  // escribo cuantas señales se ven
   document.getElementById("cuenta").textContent = visibles.length;
 }
 
+
+// ===== FILTROS POR FAMILIA =====
 var botonesFamilia = document.querySelectorAll(".familia");
 
 for (var k = 0; k < botonesFamilia.length; k++) {
-  var fam = botonesFamilia[k].getAttribute("data-familia");
-  var cantidad = 0;
-  for (var m = 0; m < SENALES.length; m++) {
-    if (fam === "todas" || SENALES[m].familia === fam) {
-      cantidad++;
-    }
-  }
-  botonesFamilia[k].innerHTML += ' <span class="cantidad">' + cantidad + "</span>";
-
   botonesFamilia[k].onclick = function () {
     familiaElegida = this.getAttribute("data-familia");
+
+    // desmarco todos los botones y marco el que toque
     for (var n = 0; n < botonesFamilia.length; n++) {
       botonesFamilia[n].classList.remove("activa");
-      botonesFamilia[n].setAttribute("aria-pressed", "false");
     }
     this.classList.add("activa");
-    this.setAttribute("aria-pressed", "true");
+
     armarTablero();
   };
 }
 
-document.getElementById("tapar").onclick = function () {
-  var tapado = document.body.classList.toggle("practica");
-  this.textContent = tapado ? "Mostrar nombres" : "Ocultar nombres";
-  this.setAttribute("aria-pressed", tapado ? "true" : "false");
-};
 
+// ===== ABRIR LA FICHA DE UNA SEÑAL =====
 function abrirFicha(pos) {
-  abierta = pos;
   var senal = visibles[pos];
 
+  // lleno la ficha con los datos de la señal
   document.getElementById("fichaDibujo").innerHTML = senal.dibujo;
   document.getElementById("fichaFamilia").textContent = FAMILIAS[senal.familia];
   document.getElementById("fichaNombre").textContent = senal.nombre;
@@ -85,113 +81,68 @@ function abrirFicha(pos) {
   document.getElementById("fichaForma").textContent = FORMAS[senal.forma];
   document.getElementById("fichaPregunta").textContent = senal.pregunta;
   document.getElementById("fichaRespuesta").textContent = senal.respuesta;
-  document.getElementById("fichaPosicion").textContent = (pos + 1) + " de " + visibles.length;
 
+  // la respuesta empieza escondida
   document.getElementById("fichaRespuesta").hidden = true;
   document.getElementById("revelar").textContent = "Ver respuesta";
-  document.getElementById("revelar").setAttribute("aria-expanded", "false");
 
-  var estabaCerrada = ficha.hidden;
+  // muestro la ficha y el fondo oscuro
   ficha.hidden = false;
   velo.hidden = false;
-  document.body.classList.add("con-ficha");
-  ficha.scrollTop = 0;
-  if (estabaCerrada) {
-    document.getElementById("cerrar").focus();
-  }
 }
 
-function cerrarFicha() {
+
+// ===== CERRAR =====
+// esconde la ficha, los consejos y el fondo oscuro
+function cerrar() {
   ficha.hidden = true;
+  consejos.hidden = true;
   velo.hidden = true;
-  document.body.classList.remove("con-ficha");
-  abierta = -1;
-  if (botonQueAbrio) {
-    botonQueAbrio.focus();
-  }
 }
 
-document.getElementById("cerrar").onclick = cerrarFicha;
-velo.onclick = function () {
-  if (!ficha.hidden) {
-    cerrarFicha();
-  } else {
-    cerrarConsejos();
-  }
-};
+document.getElementById("cerrar").onclick = cerrar;
+document.getElementById("cerrarConsejos").onclick = cerrar;
+velo.onclick = cerrar;
 
+
+// ===== VER RESPUESTA =====
 document.getElementById("revelar").onclick = function () {
   var respuesta = document.getElementById("fichaRespuesta");
-  respuesta.hidden = !respuesta.hidden;
-  this.textContent = respuesta.hidden ? "Ver respuesta" : "Ocultar respuesta";
-  this.setAttribute("aria-expanded", respuesta.hidden ? "false" : "true");
-};
 
-document.getElementById("anterior").onclick = function () {
-  var pos = abierta - 1;
-  if (pos < 0) {
-    pos = visibles.length - 1;
+  if (respuesta.hidden) {
+    respuesta.hidden = false;
+    this.textContent = "Ocultar respuesta";
+  } else {
+    respuesta.hidden = true;
+    this.textContent = "Ver respuesta";
   }
-  abrirFicha(pos);
 };
 
-document.getElementById("siguiente").onclick = function () {
-  var pos = abierta + 1;
-  if (pos >= visibles.length) {
-    pos = 0;
-  }
-  abrirFicha(pos);
-};
 
-var consejos = document.getElementById("consejos");
-var botonesRol = document.querySelectorAll(".rol");
-
+// ===== CONSEJOS DE SEGURIDAD =====
 document.getElementById("abrirConsejos").onclick = function () {
   consejos.hidden = false;
   velo.hidden = false;
-  document.body.classList.add("con-ficha");
-  document.getElementById("cerrarConsejos").focus();
 };
 
-function cerrarConsejos() {
-  consejos.hidden = true;
-  velo.hidden = true;
-  document.body.classList.remove("con-ficha");
-  document.getElementById("abrirConsejos").focus();
-}
-
-document.getElementById("cerrarConsejos").onclick = cerrarConsejos;
+// botones de peaton, ciclista y conductor
+var botonesRol = document.querySelectorAll(".rol");
 
 for (var r = 0; r < botonesRol.length; r++) {
   botonesRol[r].onclick = function () {
-    var elegido = this.getAttribute("data-rol");
+    // escondo todas las listas y desmarco los botones
     for (var t = 0; t < botonesRol.length; t++) {
-      var rol = botonesRol[t].getAttribute("data-rol");
       botonesRol[t].classList.remove("activa");
-      botonesRol[t].setAttribute("aria-pressed", "false");
-      document.getElementById(rol).hidden = true;
+      document.getElementById(botonesRol[t].getAttribute("data-rol")).hidden = true;
     }
+
+    // muestro solo la lista elegida
     this.classList.add("activa");
-    this.setAttribute("aria-pressed", "true");
-    document.getElementById(elegido).hidden = false;
+    document.getElementById(this.getAttribute("data-rol")).hidden = false;
   };
 }
 
-document.onkeydown = function (evento) {
-  if (!consejos.hidden && evento.key === "Escape") {
-    cerrarConsejos();
-    return;
-  }
-  if (abierta === -1) {
-    return;
-  }
-  if (evento.key === "Escape") {
-    cerrarFicha();
-  } else if (evento.key === "ArrowRight") {
-    document.getElementById("siguiente").click();
-  } else if (evento.key === "ArrowLeft") {
-    document.getElementById("anterior").click();
-  }
-};
 
+// ===== INICIO =====
+// al cargar la pagina muestro todas las señales
 armarTablero();
