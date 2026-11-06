@@ -1,4 +1,4 @@
-// ===== VARIABLES =====
+// VARIABLES 
 // la familia que elegi en el filtro y las señales que se ven
 var familiaElegida = "todas";
 var visibles = [];
@@ -10,9 +10,9 @@ var consejos = document.getElementById("consejos");
 var velo = document.getElementById("velo");
 
 
-// ===== ARMAR EL TABLERO DE SEÑALES =====
+//ARMAR EL TABLERO DE SEÑALES
 function armarTablero() {
-  // vacio el tablero
+  // vacio el tableroo
   tablero.innerHTML = "";
   visibles = [];
 
@@ -49,7 +49,7 @@ function armarTablero() {
 }
 
 
-// ===== FILTROS POR FAMILIA =====
+// FILTROS POR FAMILIA
 var botonesFamilia = document.querySelectorAll(".familia");
 
 for (var k = 0; k < botonesFamilia.length; k++) {
@@ -67,7 +67,7 @@ for (var k = 0; k < botonesFamilia.length; k++) {
 }
 
 
-// ===== ABRIR LA FICHA DE UNA SEÑAL =====
+// ABRIR LA FICHA DE UNA SEÑAL
 function abrirFicha(pos) {
   var senal = visibles[pos];
 
@@ -92,7 +92,7 @@ function abrirFicha(pos) {
 }
 
 
-// ===== CERRAR =====
+//  CERRAR 
 // esconde la ficha, los consejos y el fondo oscuro
 function cerrar() {
   ficha.hidden = true;
@@ -105,7 +105,7 @@ document.getElementById("cerrarConsejos").onclick = cerrar;
 velo.onclick = cerrar;
 
 
-// ===== VER RESPUESTA =====
+//  VER RESPUESTA
 document.getElementById("revelar").onclick = function () {
   var respuesta = document.getElementById("fichaRespuesta");
 
@@ -119,7 +119,7 @@ document.getElementById("revelar").onclick = function () {
 };
 
 
-// ===== CONSEJOS DE SEGURIDAD =====
+// CONSEJOS DE SEGURIDAD 
 document.getElementById("abrirConsejos").onclick = function () {
   consejos.hidden = false;
   velo.hidden = false;
@@ -143,6 +143,6 @@ for (var r = 0; r < botonesRol.length; r++) {
 }
 
 
-// ===== INICIO =====
+// INICIO 
 // al cargar la pagina muestro todas las señales
 armarTablero();
